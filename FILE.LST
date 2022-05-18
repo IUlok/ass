@@ -1,0 +1,137 @@
+Turbo Assembler	 Version 3.2	    04/07/22 11:08:50	    Page 1
+file.asm
+
+
+
+      1				     include io.asm ;30	var fyodorov
+      2	0000			     .model small
+      3	0000			     .stack 100
+      4	0000			     .data ;segment data
+      5	0000  ????			     x dw ?
+      6	0002  ????			     y dw ? ;peremennye
+      7	0004  45 6E 74 65 72 20	78+	     text db "Enter x: ", '$'
+      8	      3A 20 24
+      9	000E  59 20 3D 20 24		     text2 db "Y = ", '$' ;texts
+     10	0013			     .code ;segment code
+     11				     .startup ;start
+1    12	0000			     @Startup:
+1    13	0000  BA 0000s			     MOV     DX,@data
+1    14	0003  8E DA			     MOV     DS,DX
+1    15	0005  8C D3			     MOV     BX,SS
+1    16	0007  2B DA			     SUB     BX,DX
+1    17	0009  D1 E3 D1 E3 D1 E3	D1+	     SHL     BX,4
+     18	      E3
+1    19	0011  FA			     CLI
+1    20	0012  8E D2			     MOV     SS,DX
+1    21	0014  03 E3			     ADD     SP,BX
+1    22	0016  FB			     STI
+     23	0017  B4 09			     mov ah,9
+     24	0019  BA 0004r			     lea dx, text
+     25	001C  CD 21			     int 21h ;output text
+     26
+     27					     InInt x ;input x
+1    28					     same <x>,<ax,AX,Ax.aX>,??0000
+1    29	001E  50			     push ax
+1    30	001F  9A 00000000se		     call far ptr procinint
+1    31	0024  A3 0000r			     mov x,ax
+1    32	0027  58			     pop ax
+     33
+     34	0028  83 3E 0000r 03		     cmp x,3 ;sravnenye	x, 3
+     35	002D  7F 15			     jg	MORE ;if more -	jump to	MORE
+     36	002F  7C 09			     jl	LESS ;if less -	jump to	LESS
+     37	0031  C7 06 0002r 0002		     mov y,2 ;else y=2
+     38	0037  EB 16 90			     jmp OUTP ;jump to OUTP
+     39
+     40	003A  A1 0000r		     LESS:   mov ax,x ;if less - y=x-1
+     41	003D  48			     dec ax
+     42	003E  A3 0002r			     mov y,ax
+     43	0041  EB 0C 90			     jmp OUTP
+     44
+     45	0044  A1 0000r		     MORE:   mov ax,x ;if more - y=-x+5
+     46	0047  F7 D8			     neg ax
+     47	0049  05 0005			     add ax,5
+     48	004C  A3 0002r			     mov y,ax
+     49
+     50	004F  B4 09		     OUTP:   mov ah,9
+     51	0051  BA 000Er			     lea dx,text2
+     52	0054  CD 21			     int 21h
+     53					     OutInt y ;output y
+1    54					    outnum <y>,<>,1
+2    55	0056  50			    push ax
+2    56	0057  52			    push dx
+2    57					    same <y>,<dx,DX,Dx,dX>,??0001
+Turbo Assembler	 Version 3.2	    04/07/22 11:08:50	    Page 2
+file.asm
+
+
+
+2    58	0058  B2 00			    mov	dl,0		    ;
+2    59	005A  A1 0002r			    mov	ax,y
+2    60	005D  B6 01			    mov	dh,1
+2    61	005F  9A 00000000se		    call far ptr procoutnum	    ;
+2    62	0064  5A			    pop	dx
+2    63	0065  58			    pop	ax
+     64				     .exit 0 ;ending start
+1    65	0066  B8 4C00			     MOV     AX,04C00h
+1    66	0069  CD 21			     INT     21h
+     67				     end ;ending code
+Turbo Assembler	 Version 3.2	    04/07/22 11:08:50	    Page 3
+Symbol Table
+
+
+
+
+Symbol Name			  Type	 Value
+
+??0000				  Number 0000
+??0001				  Number 0000
+??DATE				  Text	 "04/07/22"
+??FILENAME			  Text	 "file	  "
+??TIME				  Text	 "11:08:50"
+??VERSION			  Number 0314
+@32BIT				  Text	 0
+@CODE				  Text	 _TEXT
+@CODESIZE			  Text	 0
+@CPU				  Text	 0101H
+@CURSEG				  Text	 _TEXT
+@DATA				  Text	 DGROUP
+@DATASIZE			  Text	 0
+@FILENAME			  Text	 FILE
+@INTERFACE			  Text	 00H
+@MODEL				  Text	 2
+@STACK				  Text	 DGROUP
+@STARTUP			  Near	 _TEXT:0000
+@WORDSIZE			  Text	 2
+LESS				  Near	 _TEXT:003A
+MORE				  Near	 _TEXT:0044
+OUTP				  Near	 _TEXT:004F
+PROCFLUSH			  Far	 ----:---- Extern
+PROCINCH			  Far	 ----:---- Extern
+PROCININT			  Far	 ----:---- Extern
+PROCNL				  Far	 ----:---- Extern
+PROCOUTNUM			  Far	 ----:---- Extern
+TEXT				  Byte	 DGROUP:0004
+TEXT2				  Byte	 DGROUP:000E
+X				  Word	 DGROUP:0000
+Y				  Word	 DGROUP:0002
+
+Macro Name
+
+FLUSH
+INCH
+ININT
+NEWLINE
+OUTCH
+OUTINT
+OUTNUM
+OUTSTR
+OUTWORD
+SAME
+
+Groups & Segments		  Bit Size Align  Combine Class
+
+DGROUP				  Group
+  STACK				  16  0064 Para	  Stack	  STACK
+  _DATA				  16  0013 Word	  Public  DATA
+_TEXT				  16  006B Word	  Public  CODE
+
